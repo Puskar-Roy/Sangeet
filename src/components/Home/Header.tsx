@@ -114,7 +114,7 @@ export default function Header({
 
 const styles = ScaledSheet.create({
   maincontainer: {
-    width: '90%',
+    width: '89%',
     marginHorizontal: 'auto',
     display: 'flex',
     justifyContent: 'space-between',

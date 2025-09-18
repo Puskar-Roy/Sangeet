@@ -6,7 +6,7 @@ export default function RecentlyPlayed() {
   return (
     <View style={styles.wraper}>
       <View style={styles.maincontainer}>
-        <Text style={styles.fourthtext}>Recently Played</Text>
+        <Text style={styles.fourthtext}>Populer Songs</Text>
         <RecentMusics/>
       </View>
     </View>
