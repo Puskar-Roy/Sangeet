@@ -8,16 +8,15 @@ import AppNavigator from './src/navigation/AppNavigator';
 const RootStack = createNativeStackNavigator();
 
 function App() {
-
-
   return (
     <SafeAreaProvider>
-      <StatusBar
+       <StatusBar
         barStyle={'light-content'}
-        backgroundColor="transparent"
+        backgroundColor="#0a071e"
         translucent={true}
         hidden={false}
-      />
+        
+      /> 
 
       <NavigationContainer ref={navigationRef}>
         <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -42,6 +41,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
+  
   },
 });
 

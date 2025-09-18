@@ -1,10 +1,14 @@
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
-import { Fonts } from '../../styles/Fonts'
+
+import Header from '../../components/Home/Header';
+import RecentlyPlayed from '../../components/Home/RecentlyPlayed';
 export default function HomeScreen() {
   return (
-    <View>
-      <Text style={ { fontSize: 50 , color:"#fff" , fontFamily:Fonts.Regular }} >HomeScreen</Text>
+    <View style={{ minHeight: '120%', backgroundColor: '#0a071e', marginTop:50 }}>
+      <Header name='Puskar Roy' member='Gold Member' />
+      <RecentlyPlayed/>
+    
     </View>
-  )
+  );
 }

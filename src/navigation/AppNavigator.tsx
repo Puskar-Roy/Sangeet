@@ -28,8 +28,8 @@ export default function AppNavigator() {
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarIconStyle: styles.tabBarIcon,
         tabBarLabelPosition: 'below-icon',
-        tabBarActiveTintColor: '#FFFFFF',
-        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.6)',
+        //tabBarActiveTintColor: '#FFFFFF',
+        //tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.6)',
       }}
     >
       <Tab.Screen

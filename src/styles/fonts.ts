@@ -1,7 +1,7 @@
 
 export const Fonts = {
   Regular: 'SRegular',
-  Bold: 'SanGeet-Bold',
+  Bold: 'SBold',
 };
 
 // // Usage:
