@@ -16,7 +16,7 @@ type MusicItem = {
   id: string;
   title: string;
   artist: string;
-  image: any; // You can make this more specific if needed
+  image: any; 
 };
 
 const data: MusicItem[] = [
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 14,
     marginBottom: 2,
-    fontFamily: 'SSemiBold', // Use your custom font if available
+    fontFamily: 'SSemiBold', 
     alignSelf:"center"
   },
   titleText: {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 12,
     lineHeight: 16,
-    fontFamily: 'SRegular', // Use your custom font if available
+    fontFamily: 'SRegular',
     alignSelf:"center"
   },
   separator: {

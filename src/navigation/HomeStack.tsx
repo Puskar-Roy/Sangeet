@@ -17,7 +17,7 @@ export default function HomeStack() {
       screenOptions={{
         headerShown: false,
         animation: 'fade_from_bottom',
-        contentStyle: { backgroundColor: '#0a071e', height: '100%' },
+     contentStyle: { backgroundColor: '#0a071e', height: '100%' },
         statusBarHidden: false,
       }}
     >

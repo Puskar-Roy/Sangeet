@@ -1,3 +1,5 @@
+
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -5,63 +7,142 @@ import {
   TouchableOpacity,
   FlatList,
   ListRenderItem,
+  Pressable,
+  GestureResponderEvent,
 } from 'react-native';
-import React from 'react';
 import { ScaledSheet } from 'react-native-size-matters';
+import { Heart as SaveIcon } from 'lucide-react-native';
 
-type RecommendItem = {
+export type RecommendItem = {
   id: string;
   title: string;
-  artist: string;
-  streams: string;
-  image: any;
+  artist?: string;
+  streams?: string;
+  image?: any | string;
+  [key: string]: any;
 };
 
-const recommendData: RecommendItem[] = [
-  {
-    id: '1',
-    title: 'Take care of you',
-    artist: 'Admina Thembi',
-    streams: '114k / steams',
-    image: require('../../../assets/music/image.png'),
-  },
-  {
-    id: '2',
-    title: 'The stranger inside you',
-    artist: 'Jeane Lebras',
-    streams: '60.5k / steams',
-    image: require('../../../assets/music/image.png'),
-  },
-  {
-    id: '3',
-    title: 'Edwall of beauty mind',
-    artist: 'Jacob Givson',
-    streams: '44.3k / steams',
-    image: require('../../../assets/music/image.png'),
-  },
-];
+type Props = {
+  songs: RecommendItem[]; 
+  height?: number;
+  onItemPress?: (item: RecommendItem, isSaved: boolean) => void;
+  saveEnable?: boolean;
+  savedIds?: string[] | null;
+  onSaveToggle?: (item: RecommendItem, isSaved: boolean) => void;
+  ListHeaderComponent?: React.ComponentType<any> | null;
+  ListEmptyComponent?: React.ComponentType<any> | null;
+};
 
-export default function Recommend() {
-  const renderItem: ListRenderItem<RecommendItem> = ({ item }) => (
-    <TouchableOpacity style={styles.recommendItem} activeOpacity={0.8}>
-      <Image
-        source={item.image}
-        style={styles.recommendImage}
-        resizeMode="cover"
-      />
-      <View style={styles.recommendTextContainer}>
-        <Text style={styles.recommendTitle} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <Text style={styles.recommendArtist} numberOfLines={1}>
-          {item.artist}
-        </Text>
-        <Text style={styles.recommendStreams} numberOfLines={1}>
-          {item.streams}
-        </Text>
-      </View>
-    </TouchableOpacity>
+export default function Recommend({
+  songs,
+  height,
+  onItemPress,
+  saveEnable = false,
+  savedIds,
+  onSaveToggle,
+  ListHeaderComponent,
+  ListEmptyComponent,
+}: Props) {
+
+  const [localSavedSet, setLocalSavedSet] = useState<Set<string>>(new Set());
+  const isSaved = useCallback(
+    (id: string) => {
+      if (Array.isArray(savedIds)) {
+        return savedIds.includes(id);
+      }
+      return localSavedSet.has(id);
+    },
+    [savedIds, localSavedSet],
   );
+
+  const toggleSave = useCallback(
+    (item: RecommendItem) => {
+      const id = item.id;
+      const currentlySaved = isSaved(id);
+      const newSaved = !currentlySaved;
+
+      if (Array.isArray(savedIds)) {
+        onSaveToggle?.(item, newSaved);
+      } else {
+        setLocalSavedSet(prev => {
+          const next = new Set(prev);
+          if (newSaved) next.add(id);
+          else next.delete(id);
+          return next;
+        });
+        onSaveToggle?.(item, newSaved);
+      }
+    },
+    [isSaved, onSaveToggle, savedIds],
+  );
+
+  const handleItemPress = useCallback(
+    (item: RecommendItem) => (_e?: GestureResponderEvent) => {
+      const saved = isSaved(item.id);
+      onItemPress?.(item, saved);
+    },
+    [isSaved, onItemPress],
+  );
+
+  const renderItem: ListRenderItem<RecommendItem> = ({ item }) => {
+    const source =
+      typeof item.image === 'string' ? { uri: item.image } : item.image;
+
+    const saved = isSaved(item.id);
+
+    return (
+      <TouchableOpacity
+        style={styles.recommendItem}
+        activeOpacity={0.8}
+        onPress={handleItemPress(item)}
+      >
+        <Image
+          source={source ?? require('../../../assets/music/image.png')}
+          style={styles.recommendImage}
+          resizeMode="cover"
+        />
+
+        <View style={styles.recommendTextContainer}>
+          <Text style={styles.recommendTitle} numberOfLines={1}>
+            {item.title}
+          </Text>
+          <Text style={styles.recommendArtist} numberOfLines={1}>
+            {item.artist ?? ''}
+          </Text>
+          {item.streams ? (
+            <Text style={styles.recommendStreams} numberOfLines={1}>
+              {item.streams}
+            </Text>
+          ) : null}
+        </View>
+
+        {saveEnable && (
+          <Pressable
+            onPress={() => toggleSave(item)}
+            style={styles.saveButton}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+           
+            <SaveIcon
+              width={18}
+              height={18}
+              stroke={saved ? '#db0000' : '#C6C6C6'}
+              fill={saved ? '#db0000' : 'none'}
+              strokeWidth={saved ? 1.6 : 1.2}
+            />
+          </Pressable>
+        )}
+      </TouchableOpacity>
+    );
+  };
+
+  const DefaultEmpty = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>No songs available</Text>
+    </View>
+  );
+
+  const data = songs ?? []; // songs is required by type, but guard anyway
 
   return (
     <View style={styles.wrapper}>
@@ -69,12 +150,14 @@ export default function Recommend() {
         <Text style={styles.fourthtext}>Recommend for you</Text>
 
         <FlatList
-          data={recommendData}
+          data={data}
           renderItem={renderItem}
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
-          style={styles.flatListStyle}
+          style={[styles.flatListStyle, height ? { height } : undefined]}
+          ListHeaderComponent={ListHeaderComponent ?? undefined}
+          ListEmptyComponent={ListEmptyComponent ?? DefaultEmpty}
         />
       </View>
     </View>
@@ -97,7 +180,7 @@ const styles = ScaledSheet.create({
     marginBottom: '20@vs',
   },
   flatListStyle: {
-    height:'250@s'
+    height: '250@s',
   },
   recommendItem: {
     flexDirection: 'row',
@@ -133,5 +216,19 @@ const styles = ScaledSheet.create({
   },
   itemSeparator: {
     height: '12@vs',
+  },
+  emptyContainer: {
+    paddingVertical: '24@vs',
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: '#999',
+    fontSize: '14@ms',
+  },
+
+  /* save button */
+  saveButton: {
+    padding: '6@ms',
+    marginLeft: '8@s',
   },
 });

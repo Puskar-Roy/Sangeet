@@ -73,40 +73,6 @@ export default function Header({
           <BellIcon />
         </View>
 
-        <View style={styles.listencontainer}>
-          <View>
-            <Text style={styles.thrdtext}>Listen The </Text>
-            <Text style={styles.thrdtext}>Latest Music</Text>
-          </View>
-
-          <View
-            style={[
-              styles.searchContainer,
-              isSearchFocused && styles.searchContainerFocused,
-            ]}
-          >
-            <TouchableOpacity
-              onPress={handleSearchIconPress}
-              style={styles.searchIconContainer}
-            >
-              <SearchIcon size={16} color={isSearchFocused ? '#fff' : '#888'} />
-            </TouchableOpacity>
-
-            <TextInput
-              ref={searchInputRef}
-              style={styles.input}
-              placeholder="Search Music"
-              placeholderTextColor="#888"
-              value={searchText}
-              onChangeText={setSearchText}
-              onFocus={handleSearchFocus}
-              onBlur={handleSearchBlur}
-              onSubmitEditing={handleSearch}
-              returnKeyType="search"
-              blurOnSubmit={true}
-            />
-          </View>
-        </View>
       </View>
     </TouchableWithoutFeedback>
   );

@@ -1,75 +1,67 @@
-// AppNavigator.tsx
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { BlurView } from '@react-native-community/blur';
-import HomeStack from './HomeStack'; // <-- adjust path as needed
+import HomeStack from './HomeStack';
+import CustomTabBar from '../components/Home/CustomTabBar';
+import { Heart, User, Home, Search, Music } from 'lucide-react-native';
+import SearchScreen from '../screens/Search/SearchScreen';
+import PlayerScreen from '../screens/Player/PlayerScreen';
 
 const Tab = createBottomTabNavigator();
-
-const TabBarBlurBackground: React.FC = () => (
-  <BlurView
-    blurAmount={20} 
-    blurType="dark" 
-    style={styles.blur}
-  />
-);
 
 export default function AppNavigator() {
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
-
-        //@ts-ignore
-        //tabBarBackground: TabBarBlurBackground ,
         tabBarShowLabel: false,
-        tabBarLabelStyle: styles.tabBarLabel,
-        tabBarIconStyle: styles.tabBarIcon,
-        tabBarLabelPosition: 'below-icon',
-        //tabBarActiveTintColor: '#FFFFFF',
-        //tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.6)',
       }}
+      tabBar={props => <CustomTabBar {...props} />}
     >
       <Tab.Screen
-        name="HOME"
+        name="Home"
         component={HomeStack}
-        // if you previously inlined tabBarIcon here, consider extracting it to a top-level component too
+        options={{
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <Home color={focused ? '#6156e2' : '#8e8e8e'} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <Search color={focused ? '#6156e2' : '#8e8e8e'} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Player"
+        component={PlayerScreen}
+        options={{
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <Music color={focused ? '#6156e2' : '#8e8e8e'} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Faves"
+        component={() => null}
+        options={{
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <Heart color={focused ? '#6156e2' : '#8e8e8e'} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={() => null}
+        options={{
+          tabBarIcon: ({ focused }: { focused: boolean }) => (
+            <User color={focused ? '#6156e2' : '#8e8e8e'} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  blur: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    // small transparent color is okay; BlurView will render the blur as specified by blurType/blurAmount
-    backgroundColor: 'rgba(0, 0, 0, 0.0000005)',
-  },
-  tabBar: {
-    position: 'absolute',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderTopWidth: 0,
-    elevation: 0,
-    height: 65,
-    paddingBottom: 10,
-    paddingTop: 10,
-  },
-  tabBarLabel: {
-    fontSize: 11,
-    fontWeight: '500',
-    marginTop: 4,
-    marginBottom: 2,
-    textAlign: 'center',
-    color: '#FFFFFF',
-  },
-  tabBarIcon: {
-    marginTop: 4,
-    marginBottom: 3,
-  },
-});
